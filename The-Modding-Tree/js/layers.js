@@ -1,0 +1,787 @@
+// A side layer with achievements, with no prestige
+addLayer("ach", {
+    startData() { return {
+        unlocked: true,
+        points: new Decimal(0),
+    }},
+    color: "yellow",
+    resource: "achievements", 
+    row: "side",
+    tooltip() { // Optional, tooltip displays when the layer is locked
+        return ("Achievements")
+    },
+    achievementPopups: true,
+    achievements: {
+        11: {
+            name: "Multiplication!",
+            done() {return player.m.points.gte(1)}, // This one is a freebie
+            tooltip: "Get your first multiplication point!", // Showed when the achievement is completed
+        },
+        12: {
+            name: "More multiplication!",
+            done() {return player.m.points.gte(new Decimal("1e10"))}, // This one is a freebie
+            tooltip: "Get 1e10 multiplication points!", // Showed when the achievement is completed
+        },
+        13: {
+            name: "Why is there such an upgrade!?",
+            done() {return hasUpgrade("m", 22)}, // This one is a freebie
+            tooltip() {if (!hasMilestone("u", 2)) return "Get multiplier upgrade 21."; else return "Get multiplier upgrade 22."}, // Showed when the achievement is completed
+        },
+        14: {
+            name: "Hey, an universe!",
+            done() {return player.u.points.gte(1)}, // This one is a freebie
+            tooltip: "Get your first universe point.", // Showed when the achievement is completed
+        },
+        15: {
+            name: "Huh, does it multiply points?",
+            done() {return player.p.points.gte(5)}, // This one is a freebie
+            tooltip: "Yes, it does. (Get 5 prestige points)", // Showed when the achievement is completed
+        },
+        21: {
+            name: "A buyable?",
+            done() {return hasUpgrade("p", 15)}, // This one is a freebie
+            tooltip: "Unlock the first buyable.", // Showed when the achievement is completed
+        },
+        22: {
+            name: "PERRY THE BUYABLE!?",
+            done() {return hasUpgrade("p", 21)}, // This one is a freebie
+            tooltip: "Unlock the second buyable.", // Showed when the achievement is completed
+        },
+        23: {
+            name: "A second universe? Does that mean it's a multiverse?",
+            done() {return player.u.points.gte(2)}, // This one is a freebie
+            tooltip: "Get your second universe point.", // Showed when the achievement is completed
+        },
+        24: {
+            name: "Challenge, done!",
+            done() {return hasChallenge("u", 11)}, // This one is a freebie
+            tooltip: "Finish the first universes challenge.", // Showed when the achievement is completed
+        },
+        25: {
+            name: "Like the milestone text wall?",
+            done() {return player.u.points.gte(3)}, // This one is a freebie
+            tooltip: "Get your third universe point.", // Showed when the achievement is completed
+        },
+        31: {
+            name: "Automation?",
+            done() {return player.au.points.gte(1)}, // This one is a freebie
+            tooltip: "Get an automation point.", // Showed when the achievement is completed
+        },
+        32: {
+            name: "Automation!",
+            done() {return hasUpgrade("au", 14)}, // This one is a freebie
+            tooltip: "Buy automation upgrade 14.", // Showed when the achievement is completed
+        },
+        33: {
+            name: "Not automation!",
+            done() {return hasUpgrade("au", 21)}, // This one is a freebie
+            tooltip: "Buy automation upgrade 21.", // Showed when the achievement is completed
+        },
+        34: {
+            name: "A slight push!",
+            done() {return hasUpgrade("p", 23)}, // This one is a freebie
+            tooltip: "Buy prestige upgrade 23.", // Showed when the achievement is completed
+        },
+        35: {
+            name: "A bit more!",
+            done() {return hasUpgrade("p", 25)}, // This one is a freebie
+            tooltip: "Buy prestige upgrade 25.", // Showed when the achievement is completed
+        },
+        41: {
+            name: "Fourth universe!",
+            done() {return player.u.points.gte(4)},
+            tooltip: "Get your fourth universe point."
+        },
+        42: {
+            name: "Oh god, why is math in here?",
+            done() {return player.ma.points.gte(1)},
+            tooltip: "Get your first math point."
+        },
+        43: {
+            name: "This upgrade was joking!",
+            done() {return hasUpgrade("ma", 11)},
+            tooltip: "Get math upgrade 11."
+        },
+        44: {
+            name: "Are we going to wait a long time?",
+            done() {return hasUpgrade("ma", 12)},
+            tooltip: "Not really. (Get math upgrade 12)"
+        },
+        45: {
+            name: "Dynamic points!",
+            done() {return hasUpgrade("au", 26)},
+            tooltip: "Get automation upgrade 26."
+        }
+    },
+},
+),
+
+// A side layer with achievements, with no prestige
+addLayer("h", {
+    startData() { return {
+        unlocked: true,
+        points: new Decimal(0),
+    }},
+    color: "lime",
+    resource: "", 
+    row: "side",
+    tooltip() { // Optional, tooltip displays when the layer is locked
+        return ("Help / explanations")
+    },
+    infoboxes: {
+        multApplication: {
+            title: "Effect calculating",
+            body() {
+                pointyPoints = new Decimal(1)
+                text = "<h2><b>This is not 100% accurate, this is only a rough estimate <h6>(it's around 25% accurate, and I have no idea why it is like that)</h6></b></h2><br><br><h3>Point gain starts at 1</h3><br><br>"
+                if (player.m.points.gte(1)) {pointyPoints = pointyPoints.mul(player.m.points.add(1)); text = text + "Point gain is multiplied by " + format(player.m.points.add(1)) + ", making it " + format(pointyPoints) + " <h6>(Amount of multiplier points)</h6><br>"}
+                if (player.p.points.gte(1)) {pointyPoints = pointyPoints.mul(player.p.points.pow(0.5).add(1)); text = text + "Point gain is multiplied by " + format(player.p.points.pow(0.5).add(1)) + ", making it " + format(pointyPoints) + " <h6>(Square root of prestige points)</h6><br>"}
+                if (hasMilestone("u", 0)) {pointyPoints = pointyPoints.pow(0.5).div(4); text = text + "Point gain is raised by 0.5, then divided by 4" + ", making it " + format(pointyPoints) + " <h6>(First universe milestone)</h6><br>"}
+                if (hasMilestone("u", 1)) {pointyPoints = pointyPoints.pow(0.75); text = text + "Point gain is raised by 0.75" + ", making it " + format(pointyPoints) + "<h6>(Second universe milestone)</h6><br>"}
+                if (hasMilestone("u", 2)) {pointyPoints = pointyPoints.pow(0.66); text = text + "Point gain is raised by 0.66, then divided by 4" + ", making it " + format(pointyPoints) + "<h6>(Third universe milestone)</h6><br>"}
+                if (hasMilestone("u", 3)) {pointyPoints = pointyPoints.pow(0.5); text = text + "Point gain is raised by 0.5" + ", making it " + format(pointyPoints) +"<h6>(Fourth universe milestone)</h6><br>"}
+                if (inChallenge("u", 11)) {pointyPoints = pointyPoints.pow(1/3); text = text + "Point gain is raised by 1/3" + ", making it " + format(pointyPoints) +"<h6>(Universe challenge 11 nerf)</h6><br>"}
+                if (hasChallenge("u", 11)) {pointyPoints = pointyPoints.pow(1.5).mul(2); text = text + "Point gain is raised by 1.5, then multiplied by 2"+ ", making it " + format(pointyPoints) +"<h6>(Universe challenge 11 reward)</h6><br>"}
+                if (hasUpgrade("au", 15)) {pointyPoints = pointyPoints.pow(1.5); text = text + "Point gain is raised by 1.5"+ ", making it " + format(pointyPoints) +"<h6>(Automation upgrade 15)</h6><br>"}
+                if (getBuyableAmount("p", 11).gte(1)) {pointyPoints = pointyPoints.mul(new Decimal(1.1).add(1).pow(getBuyableAmount("p", 11)));text = text + "Point gain is multiplied by " + format(new Decimal(1.1).add(1).pow(getBuyableAmount("p", 11))) + ", making it " + format(pointyPoints) + " <h6>(Prestige buyable 11 effect)</h6><br>"}
+                if (getBuyableAmount("p", 12).gte(1)) {pointyPoints = pointyPoints.mul(new Decimal(1.21).add(1).pow(getBuyableAmount("p", 12)));text = text + "Point gain is multiplied by " + format(new Decimal(1.21).add(1).pow(getBuyableAmount("p", 12))) + ", making it " + format(pointyPoints) + " <h6>(Prestige buyable 12 effect)</h6><br>"}
+                if (getBuyableAmount("p", 13).gte(1)) {pointyPoints = pointyPoints.mul(new Decimal(1.331).add(1).pow(getBuyableAmount("p", 13))); text = text + "Point gain is multiplied by " + format(new Decimal(1.331).add(1).pow(getBuyableAmount("p", 13))) + ", making it " + format(pointyPoints) + " <h6>(Prestige buyable 13 effect)</h6><br>"}
+                if (player.points.gte(1e150) && hasMilestone("u", 1)) {soft = pointyPoints; pointyPoints = softcap(pointyPoints, new Decimal(1e150), 0.55); text = text + "Point gain gets raised by " + format(new Decimal(1).div(soft.log10().div(pointyPoints.log10())), 4) + ", making it " + format(pointyPoints) + " <h6>(Softcap unlocked by universe milestone 2 and 1e150 points)</h6><br>"}
+                if (player.points.gte(1e100) && hasMilestone("u", 2)) {soft = pointyPoints; pointyPoints = softcap(pointyPoints, new Decimal(1e100), 0.25); text = text + "Point gain gets raised by " + format(new Decimal(1).div(soft.log10().div(pointyPoints.log10())), 4) + ", making it " + format(pointyPoints) + " <h6>(Softcap unlocked by universe milestone 3 and 1e100 points)</h6><br>"}
+                if (player.points.gte(1e150) && hasMilestone("u", 2)) {soft = pointyPoints; pointyPoints = softcap(pointyPoints, new Decimal(1e150), 0.5); text = text + "Point gain gets raised by " + format(new Decimal(1).div(soft.log10().div(pointyPoints.log10())), 4) + ", making it " + format(pointyPoints) + " <h6>(Softcap unlocked by universe milestone 3 and 1e150 points)</h6><br>"}
+                if (player.points.gte(1e100)) {soft = pointyPoints; pointyPoints = softcap(pointyPoints, new Decimal(1e100), 0.5); text = text + "Point gain gets raised by " + format(new Decimal(1).div(soft.log10().div(pointyPoints.log10())), 4) + ", making it " + format(pointyPoints) + " <h6>(Softcap unlocked by default, and at least 1e100 points)</h6><br>"}
+                if (hasUpgrade("p", 23)) {pointyPoints = pointyPoints.mul(400); text = text + "Point gain is multiplied by 400"+ ", making it " + format(pointyPoints) +" <h6>(Prestige upgrade 23 effect)</h6><br>"}
+                if (hasUpgrade("p", 24)) {pointyPoints = pointyPoints.mul(200); text = text + "Point gain is multiplied by 200"+ ", making it " + format(pointyPoints) +" <h6>(Prestige upgrade 24 effect)</h6><br>"}
+                if (hasUpgrade("p", 25)) {pointyPoints = pointyPoints.mul(300); text = text + "Point gain is multiplied by 300"+ ", making it " + format(pointyPoints) +" <h6>(Prestige upgrade 25 effect)</h6><br>"}
+                if (getBuyableAmount("ma", 11).gte(1)) {pointyPoints = pointyPoints.mul(getBuyableAmount("ma", 11)); text = text + "Point gain is multiplied by " + getBuyableAmount("ma", 11) + ", making it " + format(pointyPoints) +"<h6>(Math buyable 11 effect)</h6><br>"}
+                if (hasUpgrade("au", 26)) {pointyPoints = pointyPoints.mul(upgradeEffect("au", 26)); text = text + "Point gain is multiplied by " + format(upgradeEffect("au", 26)) + ", making it " + format(pointyPoints) + "<h6>(Automation upgrade 26 effect)</h6><br>"}
+                if (hasUpgrade("ma", 13)) {pointyPoints = pointyPoints.pow(2); text = text + "Point gain is raised by 2"+ ", making it " + format(pointyPoints) +" <h6>(Math upgrade 13 effect)</h6><br>"}
+                if (player.points.gte(1e100) && hasMilestone("u", 4)) {soft = pointyPoints; pointyPoints = softcap(pointyPoints, new Decimal(1e100), 0.5); text = text + "Point gain gets raised by " + format(new Decimal(1).div(soft.log10().div(pointyPoints.log10())), 4) + ", making it " + format(pointyPoints) + " <h6>(Softcap unlocked by universe milestone 5 and 1e100 points)</h6><br>"}
+                if (player.points.gte(1e175) && hasMilestone("u", 4)) {soft = pointyPoints; pointyPoints = softcap(pointyPoints, new Decimal(1e175), 0.25); text = text + "Point gain gets raised by " + format(new Decimal(1).div(soft.log10().div(pointyPoints.log10())), 4) + ", making it " + format(pointyPoints) + " <h6>(Softcap unlocked by universe milestone 5 and 1e175 points)</h6><br>"}
+                return text
+            },
+            titleStyle: {'background-color': '#FF0000'},
+            style: {'border-color': '#FF0000'},
+        },
+        
+    },
+    tabFormat: {
+        "Explanations": {
+            content: [
+                ["infobox", "multApplication"],
+            ]
+        }
+    }
+},
+),
+
+
+
+addLayer("u", {
+    symbol: "U",
+    startData() { return {
+        unlocked: true,
+        points: new Decimal(0),
+    }},
+    color: "#dddddd",
+    resource: "universe points", 
+    row: 5,
+    requires() {if (!hasMilestone("u", 4)) return new Decimal("1e200"); else return new Decimal("1e500")}, // Can be a function that takes requirement increases into account
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "normal",
+    exponent: new Decimal(1e-100),
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    layerShown(){return hasMilestone("u", 0) || hasUpgrade("m", 22)},
+    milestones: {
+        0: {
+            requirementDescription: "First universe point",
+            effectDescription: "Reset the universe, nerfing your point gain but unlocking something new.",
+            tooltip: "Point gain is square rooted and divided by two. Multiplier exponent is multiplied by 0.75. Unlock a new layer.",
+            done() { return player.u.points.gte(1) }
+        },
+        1: {
+            requirementDescription: "Second universe point",
+            effectDescription: "Reset the universe, nerfing your point gain but unlocking something new.",
+            tooltip: "Point gain is raised to 0.75. Unlock a new challenge.",
+            done() { return player.u.points.gte(2) },
+            unlocked() {return hasMilestone("u", 0)}
+        },
+        2: {
+            requirementDescription: "Third universe point",
+            effectDescription: "Reset the universe, nerfing your point gain again but unlocking something new.",
+            tooltip: "Point gain is raised to 0.66 and is divided by 4. Unlock a new layer and new upgrades. Decrease the multiplier requirement. Add a few softcaps here and there.",
+            done() { return player.u.points.gte(3) },
+            unlocked() {return hasMilestone("u", 1)}
+        },
+        3: {
+            requirementDescription: "Fourth universe point",
+            effectDescription: "Reset the universe, nerfing your point gain again but unlocking something new.",
+            tooltip: "Point gain is raised by 0.5. And uhh, disregard whatever was on the new prestige upgrades, it's now under a softcap. Unlock a new layer.",
+            done() { return player.u.points.gte(4) },
+            unlocked() {return hasMilestone("u", 2)}
+        },
+        4: {
+            requirementDescription: "Fifth universe point",
+            effectDescription: "Reset the universe, <b>buffing</b> your point gain again and making the dev's life hell.",
+            tooltip: "REMOVE ALL SOFTCAPS.",
+            done() { return player.u.points.gte(5) },
+            unlocked() {return hasMilestone("u", 3)}
+        },
+    },
+    challenges: {
+        11: {
+            name: "<br><h6>The timewall that happens at this point in the game because I had no idea what to do for this</h6>",
+            challengeDescription: "Cube root point gain.",
+            canComplete: function() {return player.points.gte(100) && player.m.points.gte(50)},
+            goalDescription: "Get 100 points and 50 multiplier points.",
+            rewardDescription: "Raise point gain by 1.5 and multiply it by 2.",
+            unlocked() {return hasMilestone("u", 1)}
+        },
+    },
+    tabFormat: {
+        "Milestones": {
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+                "milestones",
+            ],
+        },
+        "Challenges": {
+            content: [
+                "main-display",
+                "prestige-button",
+                "blank",
+                "challenges",
+            ],
+        },
+    }
+},
+),
+
+addLayer("au", {
+    symbol: "Au",
+    startData() { return {
+        unlocked: true,
+        points: new Decimal(0),
+    }},
+    color: "#555555",
+    resource: "automation points", 
+    row: 5,
+    requires: new Decimal("1e100"), // Can be a function that takes requirement increases into account
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "normal",
+    exponent: new Decimal(2.5e-2),
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        if (hasUpgrade("au", 11)) mult = mult.mul(2)
+        if (hasUpgrade("au", 12)) mult = mult.mul(1.5)
+        if (hasUpgrade("au", 15)) mult = mult.mul(2)
+        if (hasUpgrade("au", 16)) mult = mult.mul(2)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    layerShown(){return hasMilestone("u", 2)},
+    
+    buyables: {
+        11: {
+            cost(x) { return new Decimal(2).pow(x) },
+            title: "Multiplier per second",
+            display() { return "You are getting " + format(getBuyableAmount("au", 11).pow(2)) + "% of multiplier per second.\nCost:" +  format(new Decimal(2).pow(getBuyableAmount("au", 11)))},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                player.multiplierGainPerSecond = player.multiplierGainPerSecond.add(1)
+            },
+        }
+    },
+    upgrades: {
+        11: {
+            title: "To",
+            description() {if (!hasUpgrade("au", 22)) return "Multiply automation gain by 2."; else return "Do nothing."},
+            cost: new Decimal(2)
+        },
+        12: {
+            title: "automate,",
+            description() {if (!hasUpgrade("au", 22)) return "Multiply automation gain by 1.5."; else return "Do nothing."},
+            cost: new Decimal(5),
+            unlocked() {return hasUpgrade("au", 11)}
+        },
+        13: {
+            title: "or",
+            description: "Get 25% of prestige per second.",
+            cost: new Decimal(10),
+            unlocked() {return hasUpgrade("au", 12)}
+        },
+        14: {
+            title: "not",
+            description: "Automate the multiplier upgrades.",
+            cost: new Decimal(15),
+            unlocked() {return hasUpgrade("au", 13)}
+        },
+        15: {
+            title: "to",
+            description() {if (!hasUpgrade("au", 22)) return "Multiply automation gain by 2 and raise point gain by 1.5."; else return "Raise point gain by 1.5."},
+            cost: new Decimal(25),
+            unlocked() {return hasUpgrade("au", 14)}
+        },
+        16: {
+            title: "automate?",
+            description() {if (!hasUpgrade("au", 22)) return "Multiply automation gain by 2 and multiply passive multiplier gain by 4. Autobuy max (and break) the prestige buyables."; else return "Multiply passive multiplier gain by 4. Autobuy max (and break) the prestige buyables."},
+            description: "Multiply automation gain by 2 and multiply passive multiplier gain by 4. Autobuy max (and break) the prestige buyables.",
+            cost: new Decimal(100),
+            unlocked() {return hasUpgrade("au", 15)}
+        },
+        21: {
+            title: "Isn't there supposed to be more automation?",
+            description: "Unlock new prestige upgrades.",
+            cost: new Decimal(400),
+            unlocked() {return hasUpgrade("au", 16)}
+        },
+        22: {
+            title: "Oh, hey, more automatio- wait a minute...",
+            description: "Disable the ability to gain automation points, but get 1 automation point per second.",
+            cost: new Decimal(0),
+            unlocked() {return hasUpgrade("ma", 12)}
+        },
+        23: {
+            title: "This is just a boring segment, isn't it!?",
+            description: "Multiply automation point gain by 4 and math points reset nothing.",
+            cost: new Decimal(10),
+            unlocked() {return hasUpgrade("au", 22)}
+        },
+        24: {
+            title: "Wait, is that a...",
+            description: "Multiply automation point gain by 2, autobuy math points.",
+            cost: new Decimal(50),
+            unlocked() {return hasUpgrade("au", 23)}
+        },
+        25: {
+            title: "DYNAMIC UPGRADE!?",
+            description() {return "Multiply automation point gain based on automation point gain. Effect: " + format(upgradeEffect("au", 25))},
+            cost: new Decimal(100),
+            unlocked() {return hasUpgrade("au", 24)},
+            tooltip: "Formula: log2(AU points + 1) + 1",
+            effect() {
+                return player.au.points.add(1).log2().add(1)
+            }
+        },
+        26: {
+            title: "Damn, that previous upgrade was suprising!",
+            description() {return "Multiply automation point gain by 2 and multiply point gain based on automation points, plus automate prestige upgrades.\nEffect: " + format(upgradeEffect("au", 26))},
+            cost: new Decimal(2000),
+            tooltip: "Formula: (AU points + 1) ^ 1.5",
+            effect() {
+                return player.au.points.add(1).pow(1.5)
+            },
+            unlocked() {return hasUpgrade("au", 25)}
+        }
+    },
+    canReset() {return !hasUpgrade("au", 22)},
+    update(diff) {
+        passiveGain = new Decimal(0)
+        if (hasUpgrade("au", 22)) passiveGain = passiveGain.add(1)
+        if (hasUpgrade("au", 23)) passiveGain = passiveGain.mul(4)
+        if (hasUpgrade("au", 24)) passiveGain = passiveGain.mul(2)
+        if (hasUpgrade("au", 25)) passiveGain = passiveGain.mul(upgradeEffect("au", 25))
+        if (hasUpgrade("au", 26)) passiveGain = passiveGain.mul(2)
+        player.au.points = player.au.points.add(passiveGain.mul(diff))
+    }
+},
+),
+
+addLayer("m", {
+    name: "multiplier", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "M", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#DC1313",
+    requires() {if (hasMilestone("u", 2)) return new Decimal(1); return new Decimal(10)}, // Can be a function that takes requirement increases into account
+    resource: "multiplier points", // Name of prestige currency
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 1, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        if (hasUpgrade("m", 11)) mult = mult.mul(3)
+        if (hasUpgrade("m", 12)) mult = mult.mul(9)
+        if (hasUpgrade("m", 13)) mult = mult.mul(81)
+        if (hasUpgrade("p", 11)) mult = mult.mul(1.5)
+        if (hasUpgrade("p", 12)) mult = mult.mul(1.5)
+        if (hasUpgrade("p", 13)) mult = mult.mul(1.5)
+        if (hasUpgrade("p", 14)) mult = mult.mul(1.25)
+        mult = mult.mul(new Decimal(1.25).add(1).pow(getBuyableAmount("p", 11)))
+        mult = mult.mul(new Decimal(1.5).add(1).pow(getBuyableAmount("p", 12)))
+        mult = mult.mul(new Decimal(1.75).add(1).pow(getBuyableAmount("p", 13)))
+        mult = mult.mul(player.p.points.add(1))
+        mult = mult.mul(buyableEffect("ma", 11))
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        if (hasMilestone("u", 0)) exp = exp.mul(0.75)
+        if (hasUpgrade("m", 21)) exp = exp.mul(1.25)
+        if (hasUpgrade("m", 22)) exp = exp.mul(1.5)
+            if (hasUpgrade("p", 25)) exp = exp.mul(1.05)
+        return exp
+    },
+    row: 0, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "m", description: "M: Reset for multiplication points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    upgrades: {
+        11: {
+            title: "Multiplication of multiplication",
+            description: "Multiply multiplication points by 3.",
+            cost: new Decimal(100),
+        },
+        12: {
+            title: "Multiplication^3",
+            description: 'Multiply multiplication gain by 9',
+            cost: new Decimal(5000)
+        },
+        13: {
+            title: "(Multiplication of multiplication) ^2",
+            description: "Multiply multiplication points by 81.",
+            cost: new Decimal(1e10),
+        },
+        21: {
+            title: "Multiplication^(&infin; / 2)",
+            description: "You will absolutely need this now.",
+            tooltip: "Multiplication exponent * 1.25",
+            cost: new Decimal(1e50),
+            unlocked() {return hasUpgrade("m", 13) && hasMilestone("u", 2)}
+        },
+        22: {
+            title: "Multiplication^&infin;",
+            description: "Obliterate the point balance.",
+            tooltip: "Multiplication exponent * 1.5",
+            cost: new Decimal(1e70),
+            unlocked() {return hasUpgrade("m", 13)}
+        }
+    },
+    layerShown(){return true},
+    passiveGeneration() {
+        gain = new Decimal(1)
+        if (hasUpgrade("au", 16)) gain = gain.mul(4)
+        return player.multiplierGainPerSecond.pow(2).div(100).mul(gain)
+    }
+})
+
+addLayer("p", {
+    name: "prestige", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "P", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#4B13DC",
+    requires: new Decimal(5), // Can be a function that takes requirement increases into account
+    resource: "prestige points", // Name of prestige currency
+    baseResource: "multiplier points", // Name of resource prestige is based on
+    baseAmount() {return player.m.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.5, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        mult = mult.mul(buyableEffect("ma", 11))
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    row: 1, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    buyables: {
+        11: {
+            title: "Maybe this will help...",
+            cost(x) { return x.pow(1.5) },
+            display() { return "Multiply point gain by 2.1 and multiplier gain by 1.25 per buyable amount.\nAmount: " + getBuyableAmount("p", 11) + "/256\nCost: " + getBuyableAmount("p", 11).add(1).pow(1.5).mul(100).round().div(100) },
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                //ChatGPT helped me make this, please don't hate me
+                let amt = getBuyableAmount(this.layer, this.id);
+                let res = player.points;
+            
+                let a = amt.toNumber();
+                let R = res.toNumber();
+            
+                // Solve approximate max affordable
+                let max = Math.floor(Math.pow(Math.pow(a, 2.5) + 2.5 * R, 1/2.5));
+                max = new Decimal(max);
+            
+                // Respect purchase limit if defined
+                let limit = this.purchaseLimit ? this.purchaseLimit : new Decimal(Infinity);
+                if (max.gt(limit)) max = limit;
+            
+                if (max.gt(amt)) {
+                    // Total cost approximation
+                    let costSpent = new Decimal(0.4).times(max.pow(2.5).sub(amt.pow(2.5)));
+                    player.points = player.points.sub(costSpent).max(0);
+                    setBuyableAmount(this.layer, this.id, max);
+                }
+            },
+            
+            purchaseLimit: new Decimal(256),
+            unlocked() {return hasUpgrade("p", 15)},
+        },
+        12: {
+            title: "This will surely help!",
+            cost(x) { return x.add(1).pow(10) },
+            display() { return "Multiply point gain by 2.21 and multiplier gain by 1.5 per buyable amount.\nAmount: " + getBuyableAmount("p", 12) + "/100\nCost: " + getBuyableAmount("p", 12).add(1).pow(10) },
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            
+            purchaseLimit: new Decimal(100),
+            unlocked() {return hasUpgrade("p", 21)},
+            buyMax() {
+                let amt = getBuyableAmount(this.layer, this.id);
+                let res = player.points;
+            
+                let a = amt.toNumber();
+                let R = res.toNumber();
+            
+                // Inverse:
+                // R >= ((b+1)^11 - (a+1)^11) / 11
+                let b = Math.floor(Math.pow((a+1) ** 11 + 11 * R, 1/11) - 1);
+            
+                b = new Decimal(b);
+            
+                let limit = this.purchaseLimit ? this.purchaseLimit : new Decimal(Infinity);
+                if (b.gt(limit)) b = limit;
+            
+                if (b.gt(amt)) {
+                    let costSpent = new Decimal(((b.add(1)).pow(11).sub((amt.add(1)).pow(11))).div(11));
+                    player.points = player.points.sub(costSpent).max(0);
+                    setBuyableAmount(this.layer, this.id, b);
+                }
+            },            
+        },
+        13: {
+            title: "I need help again.",
+            cost(x) {a = new Decimal(2); return a.pow(x) },
+            display() { return "Multiply point gain by 2.331 and multiplier gain by 1.75 per buyable amount.\nAmount: " + getBuyableAmount("p", 13) + "/500\nCost: " + new Decimal(2).pow(getBuyableAmount("p", 13)) },
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            purchaseLimit: new Decimal(500),
+            unlocked() {return hasUpgrade("p", 22)},
+            buyMax() {
+                let amt = getBuyableAmount(this.layer, this.id);
+                let res = player.points;
+            
+                if (res.lte(0)) return;
+            
+                let twoToA = Decimal.pow(2, amt);
+                let max = res.add(twoToA).log(2).floor(); // b = log2(R + 2^a)
+            
+                // Respect purchase limit
+                let limit = this.purchaseLimit ? this.purchaseLimit : new Decimal(Infinity);
+                if (max.gt(limit)) max = limit;
+            
+                if (max.gt(amt)) {
+                    setBuyableAmount(this.layer, this.id, max);
+                    if (player.points > new Decimal(1e150)) setBuyableAmount(this.layer, this.id, new Decimal(500))
+                    // Optional: subtract exact cost if you want leftover points
+                }
+            },
+        },
+    },
+    upgrades: {
+        11: {
+            title: "...",
+            description: "Multiply multiplication points by 1.5.",
+            cost: new Decimal(1),
+        },
+        12: {
+            title: "What...",
+            description: "Multiply multiplication points by 1.5.",
+            cost: new Decimal(2),
+            unlocked() {return hasUpgrade("p", 11)}
+        },
+        13: {
+            title: "...happened?",
+            description: "Multiply multiplication points by 1.5.",
+            cost: new Decimal(4),
+            unlocked() {return hasUpgrade("p", 12)}
+        },
+        14: {
+            title: "Why am I so weak?",
+            description: "Multiply multiplication points by 1.25.",
+            cost: new Decimal(8),
+            unlocked() {return hasUpgrade("p", 13)}
+        },
+        15: {
+            title: "Maybe I can...",
+            description: "Unlock a buyable.",
+            cost: new Decimal(16),
+            unlocked() {return hasUpgrade("p", 14)}
+        },
+        21: {
+            title: "I need more power!",
+            description: "Unlock another buyable.",
+            cost: new Decimal(1000000),
+            unlocked() {return getBuyableAmount("p", 11).equals(new Decimal(256)) && hasMilestone("u", 1)}
+        },
+        22: {
+            title: "MORE!",
+            description: "Unlock another buyable.",
+            cost: new Decimal(1000000),
+            unlocked() {return getBuyableAmount("p", 12).equals(new Decimal(100)) && hasMilestone("u", 2)}
+        },
+        23: {
+            title: "A bit more?",
+            description: "Multiply point gain by 400 after softcaps.",
+            cost: new Decimal("1e1270"),
+            unlocked() {return hasUpgrade("au", 21) && hasUpgrade("p", 22)}
+        },
+        24: {
+            title: "A little bit more?",
+            description: "Multiply point gain by 200 after softcaps.",
+            cost: new Decimal("1e1275"),
+            unlocked() {return hasUpgrade("au", 21) && hasUpgrade("p", 23)}
+        },
+        25: {
+            title: "Yep, just a biiiit more.",
+            description: "Multiply point gain by 300 after softcaps, and multiply the exponent of multiplier by 1.1",
+            cost: new Decimal("1e1280"),
+            unlocked() {return hasUpgrade("au", 21) && hasUpgrade("p", 24)}
+        },
+    },
+    layerShown(){return hasMilestone("u", 0)},
+    passiveGeneration() {
+        if (hasUpgrade("au", 13)) return new Decimal(0.25)
+        return new Decimal(0)
+    },
+    branches: ['ma', 'm'],
+    update(diff) {
+        if (hasUpgrade("au", 16)) {
+            buyMaxBuyable("p", 11)
+            buyMaxBuyable("p", 12)
+            buyMaxBuyable("p", 13)
+        }
+    },
+    
+}),
+
+addLayer("ma", {
+    name: "math", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "M", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#4B13DC",
+    requires: new Decimal("1e1140"), // Can be a function that takes requirement increases into account
+    resource: "math points", // Name of prestige currency
+    baseResource: "prestige points", // Name of resource prestige is based on
+    baseAmount() {return player.p.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: new Decimal(1.25), // Prestige currency exponent
+    base: new Decimal(3.5),
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    row: 2, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "a", description: "A: Reset for math points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    canBuyMax() {return hasUpgrade("ma", 14)},
+    buyables: {
+        11: {
+            title: "Fibonacci",
+            cost(x) { return x },
+            display() {
+                amount = "20"
+                if (hasUpgrade("ma", 14)) amount = "100"
+                return "Multiply gain of all layers below by " + format(buyableEffect(this.layer, 11)) + ", and point gain by " + format(getBuyableAmount("ma", 11)) + "\nAmount: " + getBuyableAmount("ma", 11) + "/" + amount +  "\nCost: " + format(getBuyableAmount("ma", 11)) },
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            effect(x) {
+                sqrt5 = Decimal.sqrt(5);
+                phi = Decimal.add(1, sqrt5).div(2);
+                psi = Decimal.sub(1, sqrt5).div(2);
+                phi_n = Decimal.pow(phi, x.add(2));
+                psi_n = Decimal.pow(psi, x.add(2));
+                result = Decimal.sub(phi_n, psi_n).div(sqrt5);
+                result = result.round()
+                if (hasUpgrade("ma", 11)) result = result.pow(2)
+                    if (hasUpgrade("ma", 14)) result = result.pow(8)
+                return result;
+            },
+            buy() {
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            purchaseLimit() {if (hasUpgrade("ma", 14)) return new Decimal(100); else return new Decimal(20)},
+            tooltip: "This buyable does not take your math points when buying!"
+        },
+    },
+    upgrades: {
+        11: {
+            title: "A bit more math, please!",
+            description: "Square the fibonacci buyable effect.",
+            cost: new Decimal(8),
+        },
+        12:
+        {
+            title: "Yeah, we need automation.",
+            description: "Unlock new automation upgrades, BUT reset your automation points.",
+            cost: new Decimal(10),
+            onPurchase() {player.au.points = new Decimal(0)
+                player.ma.points = player.ma.points.add(10)
+            },
+            tooltip: "Only this time, the upgrade does NOT take your hard earned points! What a revolution, everybody!"
+        },
+        13: {
+            title: "Ok.",
+            description: "Point gain is squared.",
+            cost: new Decimal(20),
+            unlocked() {return hasUpgrade("au", 26)}
+        },
+        14: {
+            title: "Huh.",
+            description: "Unlock the ability to buy max math points. Increase the fibonacci buyable cap by 80 and raise its power by 8.",
+            cost: new Decimal(215),
+            unlocked() {return hasUpgrade("ma", 13)}
+        },
+    },
+    resetsNothing() {return hasUpgrade("au", 23)},
+    autoPrestige() {return hasUpgrade("au", 24)},
+    layerShown() {return hasMilestone("u", 3)}
+})
+

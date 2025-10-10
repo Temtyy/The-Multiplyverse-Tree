@@ -1,0 +1,113 @@
+let modInfo = {
+	name: "The Multiplyverse Tree",
+	author: "Temtyy",
+	pointsName: "points",
+	modFiles: ["layers.js", "tree.js"],
+
+	discordName: "",
+	discordLink: "",
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
+	offlineLimit: 1,  // In hours
+}
+
+// Set your version in num and name
+let VERSION = {
+	num: "0.1",
+	name: "The beninging",
+}
+
+let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.1</h3><br>
+		- Added 5 layers<br>
+		- Added achievements and help<br>
+		- Don't know how long will the update take
+		<h6>- If you want, you can help me fix the help calculation menu (or see how bad my code is) by checking the github repo!</h6>`
+
+let winText = `Congratulations! You have reached the current endgame, but for now...`
+
+// If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
+// (The ones here are examples, all official functions are already taken care of)
+var doNotCallTheseFunctionsEveryTick = ["blowUpEverything"]
+
+function getStartPoints(){
+    return new Decimal(modInfo.initialStartPoints)
+}
+
+// Determines if it should show points/sec
+function canGenPoints(){
+	return true
+}
+
+// Calculate points/sec!
+function getPointGen() {
+	if(!canGenPoints())
+		return new Decimal(0)
+
+	let gain = new Decimal(1)
+	gain = gain.mul(player.m.points.add(1))
+	gain = gain.mul(player.p.points.pow(0.5).add(1))
+	if (hasMilestone("u", 0)) gain = gain.pow(0.5).div(2)
+	if (hasMilestone("u", 1)) gain = gain.pow(0.75)
+	if (hasMilestone("u", 2)) gain = gain.pow(0.66).div(4)
+		if (hasMilestone("u", 3)) gain = gain.pow(0.5)
+	if (inChallenge("u", 11)) gain = gain.pow(1 / 3)
+	if (hasChallenge("u", 11)) gain = gain.pow(1.5).mul(2)
+	if (hasUpgrade("au", 15)) gain = gain.pow(1.5)
+	gain = gain.mul(new Decimal(1.1).add(1).pow(getBuyableAmount("p", 11)))
+	gain = gain.mul(new Decimal(1.21).add(1).pow(getBuyableAmount("p", 12)))
+	gain = gain.mul(new Decimal(1.331).add(1).pow(getBuyableAmount("p", 13)))
+	
+	if (player.u.points.gte(2)) gain = softcap(gain, new Decimal(1e150), 0.55)
+	if (player.u.points.gte(3)) gain = softcap(gain, new Decimal(1e100), 0.25)
+	if (player.u.points.gte(3)) gain = softcap(gain, new Decimal(1e150), 0.5)
+	gain = softcap(gain, new Decimal(1e100), 0.5)
+	//I have no idea why I am doing this here
+	if (hasUpgrade("au", 14)) buyUpgrade("m", 11)
+	if (hasUpgrade("au", 14)) buyUpgrade("m", 12)
+	if (hasUpgrade("au", 14)) buyUpgrade("m", 13)
+	if (hasUpgrade("au", 14)) buyUpgrade("m", 21)
+	if (hasUpgrade("au", 14)) buyUpgrade("m", 22)
+	if (hasUpgrade("p", 23)) gain = gain.mul(new Decimal(400))
+	if (hasUpgrade("p", 24)) gain = gain.mul(new Decimal(200))
+	if (hasUpgrade("p", 25)) gain = gain.mul(new Decimal(300))
+		if (hasUpgrade("au", 26)) autobuyUpgrades('p')
+	if (getBuyableAmount("ma", 11).gte(1)) gain = gain.mul(getBuyableAmount("ma", 11))
+	if (hasUpgrade("au", 26)) gain = gain.mul(upgradeEffect("au", 26))
+		if (hasUpgrade("ma", 13)) gain = gain.pow(2)
+	if (player.u.points.gte(4)) gain = softcap(gain, new Decimal(1e100), 0.5)
+		if (player.u.points.gte(4)) gain = softcap(gain, new Decimal(1e175), 0.25)
+	return gain
+}
+
+// You can add non-layer related variables that should to into "player" and be saved here, along with default values
+function addedPlayerData() { return {multiplierGainPerSecond: new Decimal(0),
+	
+}}
+
+// Display extra things at the top of the page
+var displayThings = [
+]
+
+// Determines when the game "ends"
+function isEndgame() {
+	return player.u.points.gte(5)
+}
+
+
+
+// Less important things beyond this point!
+
+// Style for the background, can be a function
+var backgroundStyle = {
+
+}
+
+// You can change this if you have things that can be messed up by long tick lengths
+function maxTickLength() {
+	return(3600) // Default is 1 hour which is just arbitrarily large
+}
+
+// Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
+// you can cap their current resources with this.
+function fixOldSave(oldVersion){
+}
