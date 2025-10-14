@@ -12,16 +12,20 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1",
-	name: "The beninging",
+	num: "0.1.1",
+	name: "The beninging + some help",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.1.1</h3><br>
+		- Removed the help/explanations tab and the calculation inside (I still have no idea how to fix it, thanks to MsliAghtlyD for trying to help me anyway!)<br>
+		- Added the difficulty tab and easier modes!<br>
+		- Fixed formatting in a few places.<br>
+		- Added the tluafed theme. (Please, do NOT try it, you'll go blind)<br>
+		- Changed a few things I forgot to change before release.<br>
 	<h3>v0.1</h3><br>
 		- Added 5 layers<br>
-		- Added achievements and help<br>
-		- Don't know how long will the update take
-		<h6>- If you want, you can help me fix the help calculation menu (or see how bad my code is) by checking the github repo!</h6>`
+		- Added achievements and help<br>`
 
 let winText = `Congratulations! You have reached the current endgame, but for now...`
 
@@ -70,12 +74,15 @@ function getPointGen() {
 	if (hasUpgrade("p", 23)) gain = gain.mul(new Decimal(400))
 	if (hasUpgrade("p", 24)) gain = gain.mul(new Decimal(200))
 	if (hasUpgrade("p", 25)) gain = gain.mul(new Decimal(300))
-		if (hasUpgrade("au", 26)) autobuyUpgrades('p')
+	if (hasUpgrade("au", 26)) autobuyUpgrades('p')
 	if (getBuyableAmount("ma", 11).gte(1)) gain = gain.mul(getBuyableAmount("ma", 11))
 	if (hasUpgrade("au", 26)) gain = gain.mul(upgradeEffect("au", 26))
-		if (hasUpgrade("ma", 13)) gain = gain.pow(2)
+	if (hasUpgrade("ma", 13)) gain = gain.pow(2)
 	if (player.u.points.gte(4)) gain = softcap(gain, new Decimal(1e100), 0.5)
-		if (player.u.points.gte(4)) gain = softcap(gain, new Decimal(1e175), 0.25)
+	if (player.u.points.gte(4)) gain = softcap(gain, new Decimal(1e175), 0.25)
+	if (getClickableState("d", 11) == "NG+") {if (!gain.gte(0.5)) gain = new Decimal(0.5); gain = gain.pow(1.05)}
+	if (getClickableState("d", 11) == "NG++") {if (!gain.gte(1)) gain = new Decimal(1); gain = gain.pow(1.1); gain = gain.mul(2)}
+	if (getClickableState("d", 11) == "NG+++") {if (!gain.gte(5)) gain = new Decimal(2.5); gain = gain.pow(1.15); gain = gain.mul(3)}
 	return gain
 }
 

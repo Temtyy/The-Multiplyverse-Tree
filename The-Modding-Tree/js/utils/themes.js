@@ -1,5 +1,5 @@
 // ************ Themes ************
-var themes = ["default", "aqua"]
+var themes = ["default", "aqua", "tluafed"]
 
 var colors = {
 	default: {
@@ -21,6 +21,16 @@ var colors = {
 		locked: "#c4a7b3",
 		background: "#001f3f",
 		background_tooltip: "rgba(0, 15, 31, 0.75)",
+	},
+	tluafed: {
+		1: "#000000",//Branch color 1
+		2: "#404040",//Branch color 2
+		3: "#909090",//Branch color 3
+		color: "#202020",
+		points: "#000000",
+		locked: "#408080",
+		background: "#f0f0f0",
+		background_tooltip: "rgba(0, 0, 0, 0.75)",
 	},
 }
 function changeTheme() {
@@ -44,7 +54,6 @@ function switchTheme() {
 	else {
 		index ++;
 		options.theme = themes[index];
-		options.theme = themes[1];
 	}
 	changeTheme();
 	resizeCanvas();
