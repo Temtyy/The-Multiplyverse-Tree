@@ -12,18 +12,21 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.1",
-	name: "The beninging + some help",
+	num: "0.1.2",
+	name: "The super epic mini update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.1.1</h3><br>
+	<h3>v0.1.2 - The super epic mini update</h3><br>
+		- Added effect text to the multiplier and prestige tab<br>
+		- Added a very secret achievement<br>
+	<h3>v0.1.1 - The beninging + some help</h3><br>
 		- Removed the help/explanations tab and the calculation inside (I still have no idea how to fix it, thanks to MsliAghtlyD for trying to help me anyway!)<br>
 		- Added the difficulty tab and easier modes!<br>
 		- Fixed formatting in a few places.<br>
 		- Added the tluafed theme. (Please, do NOT try it, you'll go blind)<br>
 		- Changed a few things I forgot to change before release.<br>
-	<h3>v0.1</h3><br>
+	<h3>v0.1 - The beninging</h3><br>
 		- Added 5 layers<br>
 		- Added achievements and help<br>`
 

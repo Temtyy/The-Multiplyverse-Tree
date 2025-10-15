@@ -52,6 +52,15 @@ addLayer("ach", {
                 player[this.layer].points = player[this.layer].points.add(1)
             }
         },
+        16: {
+            name: "The easy way.",
+            done() {return getClickableState("d", 11) == "NG+++"}, // This one is a freebie
+            tooltip: "Set the difficulty to NG+++.", // Showed when the achievement is completed
+            onComplete() {
+                player[this.layer].points = player[this.layer].points.add(1)
+            },
+            unlocked() {return hasAchievement(this.layer, this.id)}
+        },
         21: {
             name: "A buyable?",
             done() {return hasUpgrade("p", 15)}, // This one is a freebie
@@ -477,6 +486,7 @@ addLayer("m", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 1, // Prestige currency exponent
+    effectDescription() {return "which multiplies point gain by " + format(player.m.points.add(1))},
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if (hasUpgrade("m", 11)) mult = mult.mul(3)
@@ -560,6 +570,7 @@ addLayer("p", {
     baseAmount() {return player.m.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.5, // Prestige currency exponent
+    effectDescription() {return "which multiplies point gain by " + format(player.p.points.pow(0.5).add(1)) + " and multiplier gain by " + format(player.p.points.add(1))},
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         mult = mult.mul(buyableEffect("ma", 11))
