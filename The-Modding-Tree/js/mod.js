@@ -18,8 +18,8 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.1.2 - The super epic mini update</h3><br>
-		- Added effect text to the multiplier and prestige tab
-		- Added a very secret achievement
+		- Added effect text to the multiplier and prestige tab<br>
+		- Added a very secret achievement<br>
 	<h3>v0.1.1 - The beninging + some help</h3><br>
 		- Removed the help/explanations tab and the calculation inside (I still have no idea how to fix it, thanks to MsliAghtlyD for trying to help me anyway!)<br>
 		- Added the difficulty tab and easier modes!<br>
