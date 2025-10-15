@@ -52,6 +52,15 @@ addLayer("ach", {
                 player[this.layer].points = player[this.layer].points.add(1)
             }
         },
+        16: {
+            name: "The easy way.",
+            done() {return getClickableState("d", 11) == "NG+++"}, // This one is a freebie
+            tooltip: "Set the difficulty to NG+++.", // Showed when the achievement is completed
+            onComplete() {
+                player[this.layer].points = player[this.layer].points.add(1)
+            },
+            unlocked() {return hasAchievement(this.layer, this.id)}
+        },
         21: {
             name: "A buyable?",
             done() {return hasUpgrade("p", 15)}, // This one is a freebie
