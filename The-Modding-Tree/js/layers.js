@@ -1113,5 +1113,6 @@ addLayer("r", {
         "blank",
         "upgrades",
         "buyables"
-    ]
+    ],
+    unlocked() {return hasMilestone('u', 4)}
 })
