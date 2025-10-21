@@ -95,7 +95,7 @@ function getPointGen() {
 	if (hasMilestone("u", 2)&& hasMilestone("u", 4)) gain = gain.pow(0.66).div(4)
 	if (hasMilestone("u", 3)&& hasMilestone("u", 4)) gain = gain.pow(0.5)
 	if (inChallenge("u", 11)&& hasMilestone("u", 4)) gain = gain.pow(1 / 3)
-	gain = gain.div(player.r.points.pow(getBuyableAmount('r', 11).add(1)))
+	if (hasMilestone('u', 4)) gain = gain.div(player.r.points.pow(getBuyableAmount('r', 11).add(1)))
 	if (getClickableState("d", 11) == "NG+") {if (!gain.gte(0.5)) gain = new Decimal(0.5); gain = gain.pow(1.05)}
 	if (getClickableState("d", 11) == "NG++") {if (!gain.gte(1)) gain = new Decimal(1); gain = gain.pow(1.1); gain = gain.mul(2)}
 	if (getClickableState("d", 11) == "NG+++") {if (!gain.gte(5)) gain = new Decimal(2.5); gain = gain.pow(1.15); gain = gain.mul(3)}
