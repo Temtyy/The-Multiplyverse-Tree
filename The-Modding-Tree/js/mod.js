@@ -12,15 +12,11 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2",
-	name: "Remove everything",
+	num: "0.1.2",
+	name: "The super epic mini update",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.2 - Remove everything</h3><br>
-		- Added the remover layer<br>
-		- Added 5 new achievements<br>
-		- Added no new secret achievements (I have no idea for any)<br>
 	<h3>v0.1.2 - The super epic mini update</h3><br>
 		- Added effect text to the multiplier and prestige tab<br>
 		- Added a very secret achievement<br>
@@ -57,23 +53,21 @@ function getPointGen() {
 	let gain = new Decimal(1)
 	gain = gain.mul(player.m.points.add(1))
 	gain = gain.mul(player.p.points.pow(0.5).add(1))
-	if (hasMilestone("u", 0) && !hasMilestone("u", 4)) gain = gain.pow(0.5).div(2)
-	if (hasMilestone("u", 1)&& !hasMilestone("u", 4)) gain = gain.pow(0.75)
-	if (hasMilestone("u", 2)&& !hasMilestone("u", 4)) gain = gain.pow(0.66).div(4)
-	if (hasMilestone("u", 3)&& !hasMilestone("u", 4)) gain = gain.pow(0.5)
-	if (inChallenge("u", 11)&& !hasMilestone("u", 4)) gain = gain.pow(1 / 3)
-	if (hasChallenge("u", 11)&& !hasMilestone("u", 4)) gain = gain.pow(1.5).mul(2)
-	if (hasChallenge("u", 11)&& hasMilestone("u", 4)) gain = gain.mul(3.375).mul(2)
-	if (hasUpgrade("au", 15)&& !hasMilestone("u", 4)) gain = gain.pow(1.5)
-	if (hasUpgrade("au", 15)&& hasMilestone("u", 4)) gain = gain.mul(new Decimal(5.0625))
+	if (hasMilestone("u", 0)) gain = gain.pow(0.5).div(2)
+	if (hasMilestone("u", 1)) gain = gain.pow(0.75)
+	if (hasMilestone("u", 2)) gain = gain.pow(0.66).div(4)
+		if (hasMilestone("u", 3)) gain = gain.pow(0.5)
+	if (inChallenge("u", 11)) gain = gain.pow(1 / 3)
+	if (hasChallenge("u", 11)) gain = gain.pow(1.5).mul(2)
+	if (hasUpgrade("au", 15)) gain = gain.pow(1.5)
 	gain = gain.mul(new Decimal(1.1).add(1).pow(getBuyableAmount("p", 11)))
 	gain = gain.mul(new Decimal(1.21).add(1).pow(getBuyableAmount("p", 12)))
 	gain = gain.mul(new Decimal(1.331).add(1).pow(getBuyableAmount("p", 13)))
 	
-	if (player.u.points.gte(2)&& !hasMilestone("u", 4)) gain = softcap(gain, new Decimal(1e150), 0.55)
-	if (player.u.points.gte(3)&& !hasMilestone("u", 4)) gain = softcap(gain, new Decimal(1e100), 0.25)
-	if (player.u.points.gte(3)&& !hasMilestone("u", 4)) gain = softcap(gain, new Decimal(1e150), 0.5)
-	if (!hasMilestone("u", 4)) gain = softcap(gain, new Decimal(1e100), 0.5)
+	if (player.u.points.gte(2)) gain = softcap(gain, new Decimal(1e150), 0.55)
+	if (player.u.points.gte(3)) gain = softcap(gain, new Decimal(1e100), 0.25)
+	if (player.u.points.gte(3)) gain = softcap(gain, new Decimal(1e150), 0.5)
+	gain = softcap(gain, new Decimal(1e100), 0.5)
 	//I have no idea why I am doing this here
 	if (hasUpgrade("au", 14)) buyUpgrade("m", 11)
 	if (hasUpgrade("au", 14)) buyUpgrade("m", 12)
@@ -86,16 +80,9 @@ function getPointGen() {
 	if (hasUpgrade("au", 26)) autobuyUpgrades('p')
 	if (getBuyableAmount("ma", 11).gte(1)) gain = gain.mul(getBuyableAmount("ma", 11))
 	if (hasUpgrade("au", 26)) gain = gain.mul(upgradeEffect("au", 26))
-	if (hasUpgrade("ma", 13)&& !hasMilestone("u", 4)) gain = gain.pow(2)
-	if (hasUpgrade("ma", 13)&& hasMilestone("u", 4)) gain = gain.mul(16)
-	if (player.u.points.gte(4)&& !hasMilestone("u", 4)) gain = softcap(gain, new Decimal(1e100), 0.5)
-	if (player.u.points.gte(4)&& !hasMilestone("u", 4)) gain = softcap(gain, new Decimal(1e175), 0.25)
-	if (hasMilestone("u", 0) && hasMilestone("u", 4)) gain = gain.pow(0.5).div(2)
-	if (hasMilestone("u", 1)&& hasMilestone("u", 4)) gain = gain.pow(0.75)
-	if (hasMilestone("u", 2)&& hasMilestone("u", 4)) gain = gain.pow(0.66).div(4)
-	if (hasMilestone("u", 3)&& hasMilestone("u", 4)) gain = gain.pow(0.5)
-	if (inChallenge("u", 11)&& hasMilestone("u", 4)) gain = gain.pow(1 / 3)
-	if (hasMilestone('u', 4)) gain = gain.div(player.r.points.pow(getBuyableAmount('r', 11).add(1)))
+	if (hasUpgrade("ma", 13)) gain = gain.pow(2)
+	if (player.u.points.gte(4)) gain = softcap(gain, new Decimal(1e100), 0.5)
+	if (player.u.points.gte(4)) gain = softcap(gain, new Decimal(1e175), 0.25)
 	if (getClickableState("d", 11) == "NG+") {if (!gain.gte(0.5)) gain = new Decimal(0.5); gain = gain.pow(1.05)}
 	if (getClickableState("d", 11) == "NG++") {if (!gain.gte(1)) gain = new Decimal(1); gain = gain.pow(1.1); gain = gain.mul(2)}
 	if (getClickableState("d", 11) == "NG+++") {if (!gain.gte(5)) gain = new Decimal(2.5); gain = gain.pow(1.15); gain = gain.mul(3)}
@@ -113,7 +100,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.u.points.gte(6)
+	return player.u.points.gte(5)
 }
 
 
