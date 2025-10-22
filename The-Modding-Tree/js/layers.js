@@ -177,7 +177,47 @@ addLayer("ach", {
             onComplete() {
                 player[this.layer].points = player[this.layer].points.add(1)
             }
-        }
+        },
+        51: {
+            name: "Oh. My. God.",
+            done() {return hasMilestone("u", 4)},
+            tooltip: "Get universe milestone 5.",
+            onComplete() {
+                player[this.layer].points = player[this.layer].points.add(1)
+            }
+        },
+        52: {
+            name: "Welp, more waiting!",
+            done() {return hasUpgrade("r", 11)},
+            tooltip: "Get remover upgrade 11.",
+            onComplete() {
+                player[this.layer].points = player[this.layer].points.add(1)
+            }
+        },
+        53: {
+            name: "Oooh, exponential!",
+            done() {return hasUpgrade("r", 21)},
+            tooltip: "Get remover upgrade 21.",
+            onComplete() {
+                player[this.layer].points = player[this.layer].points.add(1)
+            }
+        },
+        54: {
+            name: "Uhhh... Are you sure it's a reset?",
+            done() {return getBuyableAmount('r', 11).gte(1)},
+            tooltip: "Perform the first remover prestige.",
+            onComplete() {
+                player[this.layer].points = player[this.layer].points.add(1)
+            }
+        },
+        55: {
+            name: "Why.",
+            done() {return hasUpgrade("r", 25)},
+            tooltip: "Get remover upgrade 25.",
+            onComplete() {
+                player[this.layer].points = player[this.layer].points.add(1)
+            }
+        },
     },
 },
 ),
@@ -252,7 +292,7 @@ addLayer("u", {
     color: "#dddddd",
     resource: "universe points", 
     row: 5,
-    requires() {if (!hasMilestone("u", 4)) return new Decimal("1e200"); else return new Decimal("1e500")}, // Can be a function that takes requirement increases into account
+    requires() {if (!hasMilestone("u", 4)) return new Decimal("1e200"); else if (player.u.points.equals(5)) return new Decimal("1e13000"); else return new Decimal("1e50000");}, // Can be a function that takes requirement increases into account
     baseResource: "points", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal",
@@ -270,34 +310,34 @@ addLayer("u", {
         0: {
             requirementDescription: "First universe point",
             effectDescription: "Reset the universe, nerfing your point gain but unlocking something new.",
-            tooltip: "Point gain is square rooted and divided by two. Multiplier exponent is multiplied by 0.75. Unlock a new layer.",
+            tooltip() {if (!hasMilestone("u", 4)) return "Multiplier effect is square rooted and divided by two. Multiplier exponent is multiplied by 0.75. Unlock a new layer."; else return "Point gain is square rooted and divided by two. Multiplier exponent is multiplied by 0.75. Unlock a new layer."},
             done() { return player.u.points.gte(1) }
         },
         1: {
             requirementDescription: "Second universe point",
             effectDescription: "Reset the universe, nerfing your point gain but unlocking something new.",
-            tooltip: "Point gain is raised to 0.75. Unlock a new challenge.",
+            tooltip() {if (!hasMilestone("u", 4)) return "Multiplier and prestige point effect is raised by 0.75. Unlock a new challenge."; else return "Point gain is raised by 0.75. Unlock a new challenge."},
             done() { return player.u.points.gte(2) },
             unlocked() {return hasMilestone("u", 0)}
         },
         2: {
             requirementDescription: "Third universe point",
             effectDescription: "Reset the universe, nerfing your point gain again but unlocking something new.",
-            tooltip: "Point gain is raised to 0.66 and is divided by 4. Unlock a new layer and new upgrades. Decrease the multiplier requirement. Add a few softcaps here and there.",
+            tooltip: "Multiplier and prestige point effect is raised to 0.66 and is divided by 4. Unlock a new layer and new upgrades. Decrease the multiplier requirement. Add a few softcaps here and there.",
             done() { return player.u.points.gte(3) },
             unlocked() {return hasMilestone("u", 1)}
         },
         3: {
             requirementDescription: "Fourth universe point",
             effectDescription: "Reset the universe, nerfing your point gain again but unlocking something new.",
-            tooltip: "Point gain is raised by 0.5. And uhh, disregard whatever was on the new prestige upgrades, it's now under a softcap. Unlock a new layer.",
+            tooltip: "Multiplier and prestige point effect is raised by 0.5. And uhh, disregard whatever was on the new prestige upgrades, it's now under a softcap. Unlock a new layer.",
             done() { return player.u.points.gte(4) },
             unlocked() {return hasMilestone("u", 2)}
         },
         4: {
             requirementDescription: "Fifth universe point",
             effectDescription: "Reset the universe, <b>buffing</b> your point gain again and making the dev's life hell.",
-            tooltip: "REMOVE ALL SOFTCAPS.",
+            tooltip: "Remove all softcaps, BUT all upgrades that raise point gain by something are replaced by multiply point gain by something^4. The universe milestone nerfs are now applied everywhere. The milestone exponent is multiplied by 0.4. Unlock a new layer.",
             done() { return player.u.points.gte(5) },
             unlocked() {return hasMilestone("u", 3)}
         },
@@ -305,10 +345,10 @@ addLayer("u", {
     challenges: {
         11: {
             name: "<br><h6>The timewall that happens at this point in the game because I had no idea what to do for this</h6>",
-            challengeDescription: "Cube root point gain.",
+            challengeDescription: "Cube root the multiplier and prestige point effect.",
             canComplete: function() {return player.points.gte(100) && player.m.points.gte(50)},
             goalDescription: "Get 100 points and 50 multiplier points.",
-            rewardDescription: "Raise point gain by 1.5 and multiply it by 2.",
+            rewardDescription: "Raise the multiplier and prestige point effect by 1.5 and multiply it by 2.",
             unlocked() {return hasMilestone("u", 1)}
         },
     },
@@ -373,6 +413,13 @@ addLayer("au", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 player.multiplierGainPerSecond = player.multiplierGainPerSecond.add(1)
             },
+        }
+    },
+    infoboxes: {
+        warning: {
+            title: "Warning!",
+            body: "Before you do the fourth universe reset, I recommend you to finish this layer first, since after that you'll lose the occasion to do so! I also don't recommend saving the points up, since you unlock a certain upgrade in the new layer that resets them... <h6>wink wink</h6>",
+            unlocked() {return !hasMilestone("u", 3)}
         }
     },
     upgrades: {
@@ -486,7 +533,17 @@ addLayer("m", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 1, // Prestige currency exponent
-    effectDescription() {return "which multiplies point gain by " + format(player.m.points.add(1))},
+    effectDescription() {
+        pointBuff = player.m.points.add(1)
+        if (hasMilestone("u", 0)) {pointBuff = pointBuff.pow(0.5)}
+        if (hasMilestone("u", 1)) pointBuff = pointBuff.pow(0.75)
+        if (hasMilestone("u", 2)) pointBuff = pointBuff.pow(0.66).div(4)
+        if (hasMilestone("u", 3)) pointBuff = pointBuff.pow(0.5)
+        if (inChallenge("u", 11)) pointBuff = pointBuff.pow(1 / 3)
+        if (hasChallenge("u", 11)) pointBuff = pointBuff.pow(1.5).mul(2)
+        if (hasUpgrade("au", 15)) pointBuff = pointBuff.pow(1.5)
+        return "which multiplies point gain by " + format(pointBuff)
+    },
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         if (hasUpgrade("m", 11)) mult = mult.mul(3)
@@ -509,7 +566,8 @@ addLayer("m", {
         if (hasMilestone("u", 0)) exp = exp.mul(0.75)
         if (hasUpgrade("m", 21)) exp = exp.mul(1.25)
         if (hasUpgrade("m", 22)) exp = exp.mul(1.5)
-            if (hasUpgrade("p", 25)) exp = exp.mul(1.05)
+        if (hasUpgrade("p", 25)) exp = exp.mul(1.05)
+        if (hasMilestone('u', 4)) exp = exp.mul(0.4)
         return exp
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
@@ -570,7 +628,18 @@ addLayer("p", {
     baseAmount() {return player.m.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.5, // Prestige currency exponent
-    effectDescription() {return "which multiplies point gain by " + format(player.p.points.pow(0.5).add(1)) + " and multiplier gain by " + format(player.p.points.add(1))},
+    effectDescription() {
+        pointBuff = player.p.points.pow(0.5).add(1)
+        multiplierBuff = player.p.points.add(1)
+        if (hasMilestone("u", 0)) {pointBuff = pointBuff.pow(0.5).div(2)}
+        if (hasMilestone("u", 1)) pointBuff = pointBuff.pow(0.75)
+        if (hasMilestone("u", 2)) pointBuff = pointBuff.pow(0.66).div(4)
+        if (hasMilestone("u", 3)) pointBuff = pointBuff.pow(0.5)
+        if (inChallenge("u", 11)) pointBuff = pointBuff.pow(1 / 3)
+        if (hasChallenge("u", 11)) pointBuff = pointBuff.pow(1.5).mul(2)
+        if (hasUpgrade("au", 15)) pointBuff = pointBuff.pow(1.5)
+        return "which multiplies point gain by " + format(pointBuff) + " and multiplier gain by " + format(multiplierBuff)
+    },
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         mult = mult.mul(buyableEffect("ma", 11))
@@ -856,5 +925,194 @@ addLayer("ma", {
     resetsNothing() {return hasUpgrade("au", 23)},
     autoPrestige() {return hasUpgrade("au", 24)},
     layerShown() {return hasMilestone("u", 3)}
-})
+}),
 
+addLayer("r", {
+    name: "remover", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "R", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(1000000),
+        base: new Decimal(1000000),
+        increase: new Decimal(1)
+    }},
+    color: "yellow",
+    requires: new Decimal("1e1140"), // Can be a function that takes requirement increases into account
+    resource: "remover points", // Name of prestige currency
+    baseResource: "multiplier points", // Name of resource prestige is based on
+    baseAmount() {return player.m.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: new Decimal(1.25), // Prestige currency exponent
+    base: new Decimal(3.5),
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        if (getClickableState("d", 11) == "NG+++") mult = mult.mul(2)
+        return mult
+    },
+    effectDescription() {return "which divides point gain by " + format(player.r.points.pow(getBuyableAmount(this.layer, 11).add(1))) + " after all nerfs."},
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exp = new Decimal(1)
+        return exp
+    },
+    infoboxes: {
+        help: {
+            title: "The waiting layer",
+            body: "Hey, you're in this layer already? That's cool. So, in this layer you start with 1 million points. Upgrades, buyables and everything else that normally takes your points instead makes points go back to 1 million, and upgrades in here instead require the points to be equal or less to the cost."
+        }
+    },
+    row: 2, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+    ],
+    buyables: {
+        11: {
+            title: "The prestige mechanic",
+            display() {
+                text = ""
+                if (getBuyableAmount(this.layer, this.id).gte(100)) text = "<h6>Whoops! I'm sorry, but this is getting out of hand. You now can't perform more remover prestiges!"
+                return "Increase the remover points you begin with by times 10, but unlock something new.<br>Amount: " + getBuyableAmount(this.layer, this.id) + "<br>Current increase: " + player.r.increase + "<br>" + text},
+            buy() {
+                player.r.increase = player.r.increase.mul(10)
+                player.r.points = player.r.base.mul(player.r.increase)
+                addBuyables(this.layer, this.id, 1)
+            },
+            canAfford() {
+                return player.r.points.lte(new Decimal(0.1).div(player.r.increase))
+            },
+            purchaseLimit() {if (!hasUpgrade('r', 35)) return new Decimal(100); else return new Decimal(105)},
+            tooltip: "Each reset decreases the minimal point amount by 10^(reset amount + 1), and raises the debuff by reset amount + 1."
+        }
+    },
+    upgrades: {
+        11: {
+            title: "The beginning",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Begin removing 0.1 remover points per second.<br><br>Requires: 1000000 remover points"},
+            canAfford() {return player.r.points.lte(1000000)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)}
+        },
+        12: {
+            title: "Quicker loss",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Multiply remover loss by 3.<br><br>Requires: 999998 remover points"},
+            canAfford() {return player.r.points.lte(999998)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)}
+        },
+        13: {
+            title: "Even quicker loss",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Multiply remover loss by 5.<br><br>Requires: 999995 remover points"},
+            canAfford() {return player.r.points.lte(999995)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)}
+        },
+        14: {
+            title: "Even more quicker loss",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Multiply remover loss by 10.<br><br>Requires: 999950 remover points"},
+            canAfford() {return player.r.points.lte(999950)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)}
+        },
+        15: {
+            title: "The quickest loss",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Multiply remover loss by 20.<br><br>Requires: 999750 remover points"},
+            canAfford() {return player.r.points.lte(999750)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)}
+        },
+        21: {
+            title: "Exponential loss?",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Raise remover loss by 1.25.<br><br>Requires: 995000 remover points"},
+            canAfford() {return player.r.points.lte(995000)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)}
+        },
+        22: {
+            title: "More exponential loss!?",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Raise remover loss by 1.2.<br><br>Requires: 950000 remover points"},
+            canAfford() {return player.r.points.lte(950000)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)}
+        },
+        23: {
+            title: "MORE exponential loss!?",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Raise remover loss by 1.4.<br><br>Requires: 900000 remover points"},
+            canAfford() {return player.r.points.lte(900000)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)}
+        },
+        24: {
+            title: "EVEN MORE (but not needed) exponential loss!?",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Raise remover loss by 1.25.<br><br>Requires: 95000000 remover points"},
+            canAfford() {return player.r.points.lte(95000000)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)},
+            unlocked() {return getBuyableAmount(this.layer, 11).gte(2)}
+        },
+        25: {
+            title: "Why.",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Raise remover loss by 1.5.<br><br>Requires: 900000000 remover points"},
+            canAfford() {return player.r.points.lte(900000000)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)},
+            unlocked() {return getBuyableAmount(this.layer, 11).gte(3)}
+        },
+        31: {
+            title: "NO.",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Tetrate the remover loss by 1.01.<br><br>Requires: 9e11 remover points"},
+            canAfford() {return player.r.points.lte(9e11)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)},
+            unlocked() {return getBuyableAmount(this.layer, 11).gte(5)}
+        },
+        32: {
+            title: "STOP.",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Tetrate the remover loss by 1.01.<br><br>Requires: 9.5e14 remover points"},
+            canAfford() {return player.r.points.lte(9.5e14)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)},
+            unlocked() {return getBuyableAmount(this.layer, 11).gte(7)}
+        },
+        33: {
+            title: "I SAID STOP.",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Tetrate the remover loss by 1.02.<br><br>Requires: 9.5e17 remover points"},
+            canAfford() {return player.r.points.lte(9.5e17)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)},
+            unlocked() {return getBuyableAmount(this.layer, 11).gte(12)}
+        },
+        34: {
+            title: "WHY WON'T YOU LISTEN?",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>Tetrate the remover loss by 1.03.<br><br>Requires: 9e35 remover points"},
+            canAfford() {return player.r.points.lte(9e35)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)},
+            unlocked() {return getBuyableAmount(this.layer, 11).gte(30)}
+        },
+        35: {
+            title: "Okay, fine.",
+            fullDisplay() {return "<h3>" + this.title + "</h3><br>I'll let you do 5 final prestiges.<br><br>Requires: 1 remover points"},
+            canAfford() {return player.r.points.lte(1)},
+            pay() {player.r.points = player.r.base.mul(player.r.increase)},
+            unlocked() {return getBuyableAmount(this.layer, 11).gte(100)}
+        },
+    },
+    branches: ['m'],
+    update(diff) {
+        if (this.unlocked())
+        {
+            mult = new Decimal(0)
+            if (hasUpgrade("r", 11)) mult = mult.add(0.1)
+            if (getClickableState("d", 11) == "NG+++") mult = mult.mul(2)
+            if (hasUpgrade("r", 12)) mult = mult.mul(3)
+            if (hasUpgrade("r", 13)) mult = mult.mul(5)
+            if (hasUpgrade("r", 14)) mult = mult.mul(10)
+            if (hasUpgrade("r", 15)) mult = mult.mul(20)
+            if (hasUpgrade("r", 21)) mult = mult.pow(1.25)
+            if (hasUpgrade("r", 22)) mult = mult.pow(1.2)
+            if (hasUpgrade("r", 23)) mult = mult.pow(1.4)
+            if (hasUpgrade("r", 24)) mult = mult.pow(1.25)
+            if (hasUpgrade("r", 25)) mult = mult.pow(1.5)
+            if (hasUpgrade("r", 31)) mult = mult.tetrate(1.01)
+            if (hasUpgrade("r", 32)) mult = mult.tetrate(1.01)
+            if (hasUpgrade("r", 33)) mult = mult.tetrate(1.02)
+            if (hasUpgrade("r", 34)) mult = mult.tetrate(1.03)
+            player.r.points = player.r.points.sub(mult.mul(diff))
+        if (player.r.points.lte(new Decimal(0.1).div(player.r.increase))) player.r.points = new Decimal(0.1).div(player.r.increase)
+        }
+    },
+    unlocked() {return hasMilestone("u", 4)},
+    tabFormat: [
+        ["infobox", "help"],
+        ["main-display", new Decimal(2)],
+        "blank",
+        "upgrades",
+        "buyables"
+    ],
+    layerShown() {return hasMilestone('u', 4)}
+})
